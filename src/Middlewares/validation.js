@@ -6,9 +6,8 @@ const isValidEmail = function (email) {
 //password validation
 const isValidPassword = function (password) {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,15}$/
-    return passwordRegex.test(email)
+    return passwordRegex.test(password)
 }
-
 //name validation
 const isValidName = function(name){
     const nameRegex = /^[a-zA-Z ]{2,30}$/
