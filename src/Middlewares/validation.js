@@ -5,8 +5,8 @@ const isValidEmail = function (email) {
 }
 //password validation
 const isValidPassword = function (password) {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,15}$/
-    return passwordRegex.test(email)
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/
+    return passwordRegex.test(password)
 }
 
 //name validation
@@ -15,12 +15,12 @@ const isValidName = function(name){
     return nameRegex.test(name)
 }
 // mobile validation
-const isValidMobile = function(mobile){
+const isValidPhone = function(Phone){
     const mobileRegex = /^[6-9]\d{9}$/
-    return mobileRegex.test(mobile)
+    return mobileRegex.test(Phone)
 }
 //title validation
-const validTitle = function (title) {                                                            
+const isValidTitle = function (title) {                                                            
     return ['Mr', 'Mrs', 'Miss'].indexOf(title) !== -1
 }
 //value validation
@@ -34,4 +34,4 @@ const isValidRequest = function (request) {
     return (Object.keys(request).length > 0)
 }
 
-module.exports ={isValidEmail,isValidPassword,isValid,isValidName,validTitle,isValidMobile,isValidRequest}
+module.exports ={isValidEmail,isValidPassword,isValid,isValidName,isValidTitle,isValidPhone,isValidRequest}
