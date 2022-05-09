@@ -71,7 +71,7 @@ let userData = async (req, res) => {
         .status(400)
         .send({ status: false, message: "Not a valid password" });
 // =========================================================== Address Validation =============================================
- /*if(address){
+ if(address){
     if (!validation.isValid(address)) {
         return res
           .status(400)
@@ -80,7 +80,7 @@ let userData = async (req, res) => {
       if(Object.keys(address).length==0) return res.status(400).send({status:false, msg: "Address Field cannot Be empty"}); 
     if(typeof address !== "Object") return res.status(400).send({status:false , msg : "Address must be an Object"})
  }
-*/
+
     
 //================================================================ Data creation ============================================
     const result = await userModel.create({

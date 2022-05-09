@@ -1,6 +1,7 @@
 
 const bookModel = require("../Models/bookModel")
 const validation = require("../Middlewares/validation")
+const userModel = require("../Models/userModel")
 const ObjectId = require("mongoose").Types.ObjectId
 
 const createBook = async function (req, res) {
@@ -21,14 +22,15 @@ const createBook = async function (req, res) {
         }
 
         //Validate userId
-        if (!validation.isValid(userId)) {
-            return res.status(400).send({ status: false, msg: "userId is required" });
+        if(!userId)return res.status(400).send({status:false, msg: "userId is required"})
+        if (!ObjectId.isValid(userId)) {
+            return res.status(400).send({ status: false, msg: "Not a valid id" });
         }
+       
+        let validUser = await userModel.findById(userId).catch(err => null)
+        if (!validUser) return res.status(404).send({ status: false, msg: "UserId doesn't exist" })
 
-        // Validation of userId
-       /* if (!validator.isValidobjectId(userId)) {
-            return res.status(400).send({ status: false, msg: "Invalid userId" });
-        }*/
+       
 
         //Validate ISBN
         if (!validation.isValid(ISBN)) {
@@ -54,11 +56,7 @@ const createBook = async function (req, res) {
         /* if(!validation.isValidDate(releasedAt)) {
             return res.status(400).send({ status: false, msg: "Validation of releasedAt is required"})
         }*/
-        let user = await userModel.findById(userId);
-        if(!user) {
-            return res.status(400).send({ status: false, msg: "UserId not found"})
-        }
-
+        
 
         const bookData = {
             title,
