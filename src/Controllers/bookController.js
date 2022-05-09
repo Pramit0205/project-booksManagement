@@ -76,5 +76,7 @@ const createBook = async function (req, res) {
         res.status(500).send({ status: false, msg: e.message })
     }
 
-    module.exports.createBook = createBook
+   
 }
+
+module.exports.createBook = createBook
