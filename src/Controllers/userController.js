@@ -3,6 +3,99 @@ const validation = require("../Middlewares/validation")
 const jwt = require("jsonwebtoken")
 
 // Create User
+//=================================================== create User Api ========================================================================
+let userData = async (req, res) => {
+  try {
+    let { title, name, phone, email, password, address } = req.body;
+//===================================== if Empty Body ================================================================
+    if (Object.keys(req.body).length == 0)
+      return res
+        .status(400)
+        .send({ status: false, msg: "plz enter User data" });
+//========================================== if Title missing & not Valid=======================================================        
+    if (!title)
+      return res.status(400).send({ status: false, msg: "title missing" });
+      if (!validation.isValidTitle(title))
+      return res
+        .status(400)
+        .send({ status: false, message: "Not a valid Title" });
+//====================================================== If Name Missing and Not Valid =========================================
+    if (!validation.isValid(name))
+      return res.status(400).send({ status: false, msg: "Name is missing" });
+    
+    if (!validation.isValidName(name))
+      return res
+        .status(400)
+        .send({ status: false, message: "Not a valid Name" });
+//=================================================== If PhONE Missing and Not Valid and ALready Exists =======================================
+    if (!phone)
+      return res
+        .status(404)
+        .send({ status: false, msg: "Phone Number missing" });
+    if (phone) {
+      let validPhone = await userModel.findOne({ phone: phone });
+      if (validPhone) {
+        return res
+          .status(400)
+          .send({ status: false, msg: "Phone Number already exists" });
+      }
+    }
+    if (!validation.isValidPhone(phone))
+    return res
+      .status(400)
+      .send({ status: false, message: "Not a valid Phone Number" });
+//========================================================== If Email Missing and Not Valid and ALready exists ==================================
+    if (!email)
+      return res.status(404).send({ status: false, msg: "email missing" });
+    if (email) {
+      let validEmail = await userModel.findOne({ email: email });
+      if (validEmail) {
+        return res
+          .status(400)
+          .send({ status: false, msg: "emailId already exists" });
+      }
+    }
+    if (!validation.isValidEmail(email))
+      return res
+        .status(400)
+        .send({ status: false, message: "Not a valid emailId" });
+//=============================================== IF Password Missing and Not Valid  ================================================       
+    if (!password) {
+      return res
+        .status(400)
+        .send({ status: false, message: "password is required" });
+    }
+
+    if (!validation.isValidPassword(password))
+      return res
+        .status(400)
+        .send({ status: false, message: "Not a valid password" });
+// =========================================================== Address Validation =============================================
+ /*if(address){
+    if (!validation.isValid(address)) {
+        return res
+          .status(400)
+          .send({ status: false, message: "Address Must Be Present" });
+      }
+      if(Object.keys(address).length==0) return res.status(400).send({status:false, msg: "Address Field cannot Be empty"}); 
+    if(typeof address !== "Object") return res.status(400).send({status:false , msg : "Address must be an Object"})
+ }
+*/
+    
+//================================================================ Data creation ============================================
+    const result = await userModel.create({
+      title,
+      name,
+      phone,
+      email,
+      password,
+      address,
+    });
+    res.status(201).send({ status: true, data: result });
+  } catch (err) {
+    return res.status(500).send({ statuS: false, msg: err.message });
+  }
+};
 
 
 //Login User
@@ -45,4 +138,6 @@ const loginUser = async function (req, res) {
     }
 }
 
+module.exports.userData = userData;
 module.exports.loginUser = loginUser
+
