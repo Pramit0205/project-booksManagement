@@ -8,7 +8,7 @@ const port = 3000
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
 
-mongoose.connect("mongodb+srv://animesh-dey98:9I9JRLwql3bINqUX@cluster0.vhmqo.mongodb.net/groupXXDatabase",  {
+mongoose.connect("mongodb+srv://animesh-dey98:9I9JRLwql3bINqUX@cluster0.vhmqo.mongodb.net/group32Database",  {
     useNewUrlParser: true})
 
 .then(()=>console.log("MongoDB is Connected."))
