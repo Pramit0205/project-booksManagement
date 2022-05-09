@@ -71,15 +71,15 @@ let userData = async (req, res) => {
         .status(400)
         .send({ status: false, message: "Your password must contain atleast one number,uppercase,lowercase and special character[ @ $ ! % * ? & ] and length should be min of 8-15 charachaters" });
     // =========================================================== Address Validation =============================================
-    if (address) {
-      if (!validation.isValid(address)) {
-        return res
-          .status(400)
-          .send({ status: false, message: "Address Must Be Present" });
-      }
-      if (Object.keys(address).length == 0) return res.status(400).send({ status: false, msg: "Address Field cannot Be empty" });
-      if (typeof address !== "Object") return res.status(400).send({ status: false, msg: "Address must be an Object" })
-    }
+    // if (address) {
+    //   if (!validation.isValid(address)) {
+    //     return res
+    //       .status(400)
+    //       .send({ status: false, message: "Address Must Be Present" });
+    //   }
+    //   if (Object.keys(address).length == 0) return res.status(400).send({ status: false, msg: "Address Field cannot Be empty" });
+    //   if (typeof address !== "Object") return res.status(400).send({ status: false, msg: "Address must be an Object" })
+    // }
 
     //================================================================ Data creation ============================================
     const result = await userModel.create({ title, name, phone, email, password, address });
@@ -113,8 +113,8 @@ const loginUser = async function (req, res) {
     if (!getUser) return res.status(404).send({ status: false, message: "User email id not found." })
 
     // Checking the password
-    const matchPassword = await userModel.findOne({ password })
-    if (!matchPassword) return res.status(401).send({ status: false, message: "Incorrect password" })
+    const actualPassWord = getUser.password
+    if (password!==actualPassWord) return res.status(401).send({ status: false, message: "Incorrect password" })
 
     // Token Generation
     const token = await jwt.sign({
