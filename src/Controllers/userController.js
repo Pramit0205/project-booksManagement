@@ -71,19 +71,7 @@ let userData = async (req, res) => {
         .status(400)
 .send({ status: false, message: "Your password must contain atleast one number,uppercase,lowercase and special character[ @ $ ! % * ? & ] and length should be min of 8-15 charachaters" });
 // =========================================================== Address Validation =============================================
- if(address){
-    if (!validation.isValid(address)) {
-        return res
-          .status(400)
-          .send({ status: false, message: "Address Must Be Present" });
-      }
-      //if(typeof address !== Object) return res.status(400).send({status:false , msg : "Address must be an Object"})
-      if(Object.keys(address).length==0) return res.status(400).send({status:false, msg: "Address Field cannot Be empty"}); 
-   
- }
-        
-    // =========================================================== Address Validation =============================================
-    let pinReg = /^[0-9]{6}$/
+let pinReg = /^[0-9]{6}$/
     //If address is present
     if (address) {
       //In address the street is present

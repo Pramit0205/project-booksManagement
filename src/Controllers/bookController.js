@@ -11,7 +11,7 @@ const createBook = async function (req, res) {
 
     const { title, excerpt, userId, ISBN, category, subcategory } = data;
 
-    //Validate title
+    //===========================================================================Validate title
     if (!validation.isValid(title)) {
       return res
         .status(400)
@@ -25,14 +25,14 @@ const createBook = async function (req, res) {
         .send({ status: false, msg: "Title already exists" });
     }
 
-    //Validate excerpt
+    //===========================================================================Validate excerpt
     if (!validation.isValid(excerpt)) {
       return res
         .status(400)
         .send({ status: false, msg: "Book excerpt is required" });
     }
 
-    //Validate userId
+    //===================================================================================Validate userId
     if (!userId)
       return res.status(400).send({ status: false, msg: "userId is required" });
     if (!ObjectId.isValid(userId)) {
@@ -45,7 +45,7 @@ const createBook = async function (req, res) {
         .status(404)
         .send({ status: false, msg: "UserId doesn't exist" });
 
-    //Validate ISBN
+    //==============================================================================Validate ISBN
     if (!validation.isValid(ISBN)) {
       return res.status(400).send({ status: false, msg: "ISBN is required" });
     }
@@ -58,14 +58,14 @@ const createBook = async function (req, res) {
         .status(400)
         .send({ status: false, msg: "ISBN already exists" });
 
-    //Validate category
+    //==============================================================================Validate category
     if (!validation.isValid(category)) {
       return res
         .status(400)
         .send({ status: false, msg: "category is required" });
     }
 
-    //Validate subcategory
+    //==============================================================================Validate subcategory
     if (!validation.isValid(subcategory)) {
       return res
         .status(400)
@@ -80,7 +80,8 @@ const createBook = async function (req, res) {
         data["subcategory"] = [subcategory];
       }
     }
-    //Validate releasedAt
+    
+    //==============================================================================Validate releasedAt
     /*if (!validation.isValid(releasedAt)) {
             return res.status(400).send({ status: false, msg: "releasedAt is required" });
         }
@@ -94,13 +95,7 @@ const createBook = async function (req, res) {
             return res.status(400).send({ status: false, msg: "Validation of releasedAt is required"})
         }*/
 
-    const bookData = {
-      title,
-      excerpt,
-      userId,
-      ISBN,
-      category,
-      subcategory,
+    const bookData = {title,excerpt,userId,ISBN,category,subcategory
       //reviews,
       // releasedAt: releasedAt ? releasedAt: "releasedAt is required",
     };
@@ -109,19 +104,19 @@ const createBook = async function (req, res) {
     return res
       .status(201)
       .send({ status: true, msg: "book created", data: savedBook });
-  } catch (e) {
-    res.status(500).send({ status: false, msg: e.message });
+  } catch (err) {
+    res.status(500).send({ status: false, msg: err.message });
   }
 };
 //==================================================================== Get books by query===========================================
 const getBooks = async function (req, res) {
   try {
     const userQuery = req.query;
-    // If no query find all active blogs
+    // ===========================================================================If no query find all active blogs
     const filter = { isDeleted: false };
     const { userId, category, subcategory } = userQuery;
 
-    // Validation of user id and adding to query
+    // ===========================================================================Validation of user id and adding to query
     if (userId) {
       if (!ObjectId.isValid(userId))
         return res
@@ -131,8 +126,14 @@ const getBooks = async function (req, res) {
         filter["userId"] = userId;
       }
     }
+    //===========================================================================If category is present on query
+    if(validation.isValid(category)){
+        filter["category"] = category.trim()
 
-    // If Subcategory is present in query
+    }
+
+
+    //===========================================================================If Subcategory is present in query
     if (validation.isValid(subcategory)) {
       const subCategoryArray = subcategory
         .trim()
@@ -142,27 +143,15 @@ const getBooks = async function (req, res) {
     }
 
     const findBooks = await bookModel
-      .find(filter)
-      .select({
-        title: 1,
-        excerpt: 1,
-        userId: 1,
-        category: 1,
-        reviews: 1,
-        releasedAt: 1,
-      });
+      .find(filter).select({title: 1,excerpt: 1,userId: 1, category: 1,reviews: 1,releasedAt: 1});
     if (Array.isArray(findBooks) && findBooks.length === 0)
       return res
         .status(404)
         .send({ status: false, message: "No Book(s) found." });
 
-    //Sort Alphabetically by title
-    const sortedBooks = findBooks.sort((a, b) =>
-      a.title.localeCompare(b.title)
-    );
-    res
-      .status(200)
-      .send({ status: true, message: "Books list", data: sortedBooks });
+    //===========================================================================Sort Alphabetically by title
+    const sortedBooks = findBooks.sort((a, b) =>a.title.localeCompare(b.title));
+    res.status(200).send({ status: true, message: "Books list", data: sortedBooks });
   } catch (err) {
     return res.status(500).send({ status: false, msg: err.message });
   }
