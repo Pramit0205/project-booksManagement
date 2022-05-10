@@ -18,6 +18,11 @@ const isValidPhone = function (Phone) {
     const mobileRegex = /^[6-9]\d{9}$/
     return mobileRegex.test(Phone)
 }
+//ISBN Validation
+const isValidISBN =function (ISBN){
+    const ISBNRegex = /^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/
+    return ISBNRegex.test(ISBN)
+}
 //title validation
 const isValidTitle = function (title) {
     return ['Mr', 'Mrs', 'Miss'].indexOf(title) !== -1
@@ -33,4 +38,4 @@ const isValidRequest = function (request) {
     return (Object.keys(request).length > 0)
 }
 
-module.exports = { isValidEmail, isValidPassword, isValid, isValidName, isValidTitle, isValidPhone, isValidRequest }
+module.exports = { isValidEmail, isValidPassword, isValid, isValidName, isValidTitle, isValidPhone, isValidRequest, isValidISBN }

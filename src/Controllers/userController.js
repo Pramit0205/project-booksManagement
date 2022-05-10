@@ -71,12 +71,24 @@ let userData = async (req, res) => {
         .status(400)
         .send({ status: false, message: "Your password must contain atleast one number,uppercase,lowercase and special character[ @ $ ! % * ? & ] and length should be min of 8-15 charachaters" });
     // =========================================================== Address Validation =============================================
-    // if (address) {
-    //   if (!validation.isValid(address)) {
-    //     return res
-    //       .status(400)
-    //       .send({ status: false, message: "Address Must Be Present" });
-    //   }
+    let pinReg = /^[0-9]{6}$/
+    //If address is present
+    if (address) {
+      //In address the street is present
+      if (address.street) {
+        if (!validation.isValid(address.street)) return res.status(400).send({ status: false, message: "Please Enter street" });
+      }
+      //In address the city is present
+      if (address.city) {
+        if (!validation.isValid(address.city)) return res.status(400).send({ status: false, message: "Please Enter city" });
+      }
+      //In address the pincode is present
+      if (address.pincode) {
+        if (!validation.isValid(address.pincode)) return res.status(400).send({ status: false, message: "Please Enter pincode" });
+        if (!pinReg.test(address.pincode)) return res.status(400).send({ status: false, message: "not a valid pin code" });
+
+      }
+    }
     //   if (Object.keys(address).length == 0) return res.status(400).send({ status: false, msg: "Address Field cannot Be empty" });
     //   if (typeof address !== "Object") return res.status(400).send({ status: false, msg: "Address must be an Object" })
     // }
