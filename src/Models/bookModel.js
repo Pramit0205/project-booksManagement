@@ -10,10 +10,12 @@ const BooksSchema = new mongoose.Schema({
     category: {type: String,required: true,trim:true},
     subcategory: {type:[String],required: true,trim:true},
     reviews: {type:Number,default: 0 },
-    deletedAt: {type: Date,}, 
+    deletedAt: {type: String, default:""}, 
     isDeleted:{type: Boolean,default: false},
-     releasedAt:{type: Date,required:true,default: Date.now(),
+     releasedAt:{type: Date,required:true,default:new Date()
     }
     }, { timestamps: true })
 
 module.exports = mongoose.model('Book', BooksSchema )
+
+

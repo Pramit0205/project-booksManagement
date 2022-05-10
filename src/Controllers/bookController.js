@@ -1,6 +1,7 @@
 
 const bookModel = require("../Models/bookModel")
 const validation = require("../Middlewares/validation")
+const userModel = require("../Models/userModel")
 const ObjectId = require("mongoose").Types.ObjectId
 
 const createBook = async function (req, res) {
@@ -21,14 +22,15 @@ const createBook = async function (req, res) {
         }
 
         //Validate userId
-        if (!validation.isValid(userId)) {
-            return res.status(400).send({ status: false, msg: "userId is required" });
+        if(!userId)return res.status(400).send({status:false, msg: "userId is required"})
+        if (!ObjectId.isValid(userId)) {
+            return res.status(400).send({ status: false, msg: "Not a valid id" });
         }
+       
+        let validUser = await userModel.findById(userId).catch(err => null)
+        if (!validUser) return res.status(404).send({ status: false, msg: "UserId doesn't exist" })
 
-        // Validation of userId
-       /* if (!validator.isValidobjectId(userId)) {
-            return res.status(400).send({ status: false, msg: "Invalid userId" });
-        }*/
+       
 
         //Validate ISBN
         if (!validation.isValid(ISBN)) {
@@ -46,19 +48,19 @@ const createBook = async function (req, res) {
             return res.status(400).send({ status: false, msg: "subcategory is required" });
         }
         //Validate releasedAt
-        if (!validation.isValid(releasedAt)) {
+        /*if (!validation.isValid(releasedAt)) {
             return res.status(400).send({ status: false, msg: "releasedAt is required" });
         }
+        // if (!validation.isValid(releasedAt)) {
+        //     return res.status(400).send({ status: false, msg: "releasedAt is required" });
+        // }
+
        
          // Validation of releasedAt
         /* if(!validation.isValidDate(releasedAt)) {
             return res.status(400).send({ status: false, msg: "Validation of releasedAt is required"})
         }*/
-        let user = await userModel.findById(userId);
-        if(!user) {
-            return res.status(400).send({ status: false, msg: "UserId not found"})
-        }
-
+        
 
         const bookData = {
             title,
@@ -77,6 +79,49 @@ const createBook = async function (req, res) {
     catch (e) {
         res.status(500).send({ status: false, msg: e.message })
     }
+}
+// Get books by query
+const getBooks = async function(req,res){
+    try{
+        const userQuery = req.query
+        // If no query find all active blogs
+        const filter = {isDeleted:false}
+        const {userId,category,subcategory} =userQuery
+        
+        // Validation of user id and adding to query
+        if(userId){
+            if(!ObjectId.isValid(userId)) return res.status(400).send({status:false, message:"Invalid UserId."})
+            if(ObjectId.isValid(userId)) {
+                filter["userId"] =userId
+            }
+        }
+        // If category is present on query
+        if(validation.isValid(category)){
+            filter["category"] = category.trim()
+
 
 }
     module.exports.createBook = createBook
+
+        }
+
+        // If Subcategory is present in query
+        if(validation.isValid(subcategory)){
+            const subCategoryArray = subcategory.trim().split(',').map(s=>s.trim())
+            filter['subcategory'] = {$all:subCategoryArray}
+        }
+
+        const findBooks = await bookModel.find(filter).select({title:1,excerpt:1,userId:1,category:1,reviews:1,releasedAt:1})
+        if(Array.isArray(findBooks) && findBooks.length ===0) return res.status(404).send({status:false, message:"No Book(s) found."})
+        
+        //Sort Alphabetically by title
+        const sortedBooks = findBooks.sort((a,b)=>a.title.localeCompare(b.title))
+        res.status(200).send({status:true, message: 'Books list', data: sortedBooks})
+    }
+    catch (err) {
+        return res.status(500).send({ status: false, msg: err.message });
+      }
+}
+
+module.exports.createBook = createBook
+module.exports.getBooks =getBooks
