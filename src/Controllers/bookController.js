@@ -1,4 +1,5 @@
 const bookModel = require("../Models/bookModel");
+const reviewModel = require("../Models/reviewModel")
 const validation = require("../Middlewares/validation");
 const userModel = require("../Models/userModel");
 const ObjectId = require("mongoose").Types.ObjectId;
@@ -155,15 +156,19 @@ const updatebook = async function (req, res) {
         const paramsId = req.params.bookId
         const dataToUpdate = req.body
         const loggedUserId = req.userId
+       
         // Id Validation
         if (!ObjectId.isValid(paramsId)) return res.status(400).send({ status: false, message: "Not a valid Book Id" })
         if (!ObjectId.isValid(loggedUserId)) return res.status(400).send({ status: false, message: "Not a valid User Id" })
+        
         // Finding Books
         const findBook = await bookModel.findOne({ _id: paramsId, isDeleted: false })
         if (!findBook) return res.status(404).send({ status: false, message: "No book found." })
+        
         // Authorization
         const requestUserId = findBook.userId
         if (loggedUserId !== requestUserId.toString()) return res.status(403).send({ status: false, message: "Unauthorized access" })
+        
         // Destructuring
         const { title, excerpt, releasedAt, ISBN } = dataToUpdate
         if (!validation.isValidRequest(dataToUpdate)) return res.status(400).send({ status: false, message: "Please enter details you want to update." })
@@ -204,8 +209,6 @@ const updatebook = async function (req, res) {
         return res.status(500).send({ status: false, message: err.message });
     }
 }
-
-
 
 //=====================Delete book by id============================================
 const deleteBook = async function (req, res) {
