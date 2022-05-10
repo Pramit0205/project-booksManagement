@@ -5,14 +5,12 @@ const userController = require("../Controllers/userController")
  const bookController = require("../Controllers/bookController")
 // const reviewController = require("../Controllers/reviewController")
 // const middleware = require("../Middlewares/auth")
-//--------------------------------------------------------//
 
-//--------------------------------------------------------//
 
-//User API
+//LogIn API
 router.post("/register", userController.userData);
 router.post("/login", userController.loginUser)
-//Book API
+
 router.post("/books", bookController.createBook)
 router.get("/books", bookController.getBooks)
 

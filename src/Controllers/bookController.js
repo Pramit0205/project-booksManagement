@@ -48,9 +48,13 @@ const createBook = async function (req, res) {
             return res.status(400).send({ status: false, msg: "subcategory is required" });
         }
         //Validate releasedAt
+        /*if (!validation.isValid(releasedAt)) {
+            return res.status(400).send({ status: false, msg: "releasedAt is required" });
+        }
         // if (!validation.isValid(releasedAt)) {
         //     return res.status(400).send({ status: false, msg: "releasedAt is required" });
         // }
+
        
          // Validation of releasedAt
         /* if(!validation.isValidDate(releasedAt)) {

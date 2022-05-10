@@ -69,7 +69,19 @@ let userData = async (req, res) => {
     if (!validation.isValidPassword(password))
       return res
         .status(400)
-        .send({ status: false, message: "Your password must contain atleast one number,uppercase,lowercase and special character[ @ $ ! % * ? & ] and length should be min of 8-15 charachaters" });
+.send({ status: false, message: "Your password must contain atleast one number,uppercase,lowercase and special character[ @ $ ! % * ? & ] and length should be min of 8-15 charachaters" });
+// =========================================================== Address Validation =============================================
+ if(address){
+    if (!validation.isValid(address)) {
+        return res
+          .status(400)
+          .send({ status: false, message: "Address Must Be Present" });
+      }
+      //if(typeof address !== Object) return res.status(400).send({status:false , msg : "Address must be an Object"})
+      if(Object.keys(address).length==0) return res.status(400).send({status:false, msg: "Address Field cannot Be empty"}); 
+   
+ }
+        
     // =========================================================== Address Validation =============================================
     let pinReg = /^[0-9]{6}$/
     //If address is present
@@ -93,6 +105,7 @@ let userData = async (req, res) => {
     //   if (typeof address !== "Object") return res.status(400).send({ status: false, msg: "Address must be an Object" })
     // }
 
+
     //================================================================ Data creation ============================================
     const result = await userModel.create({ title, name, phone, email, password, address });
     res.status(201).send({ status: true, data: result });
@@ -103,12 +116,11 @@ let userData = async (req, res) => {
 };
 
 
-//Login User
+//====================================================================Login User===================================================================
 const loginUser = async function (req, res) {
   try {
     const credentials = req.body
-
-    // Validation of input
+// Validation of input
     if (!validation.isValidRequest(credentials)) return res.status(400).send({ status: false, message: "Please enter the required credentials." })
     const { email, password } = credentials
 
@@ -138,11 +150,12 @@ const loginUser = async function (req, res) {
     // Set header
     res.setHeader("x-api-key", token);
     res.status(200).send({ status: true, message: "Author login successful", data: { token } })
-  }
-   catch (err) {
+}
+ catch (err) {
     res.status(500).send({ status: false, message: "Error", error: err.message })
   }
 }
+
 
 module.exports.userData = userData;
 module.exports.loginUser = loginUser
