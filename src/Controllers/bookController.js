@@ -131,10 +131,6 @@ const getBooks = async function (req, res) {
         filter["userId"] = userId;
       }
     }
-    // If category is present on query
-    if (validation.isValid(category)) {
-      filter["category"] = category.trim();
-    }
 
     // If Subcategory is present in query
     if (validation.isValid(subcategory)) {
