@@ -12,12 +12,14 @@ const mid1 = async function (req, res, next) {
         let decodedToken
         try{
              decodedToken = await jwt.verify(token, "UrAnIuM#GrOuP@32")
+            
             // if(!decodedToken) return res.status(401).send({status:false, message:"Invalid token."})
         }
         catch (err) {
-            res.status(401).send({ status: false, message: "Invalid Token", error:err.message })
+          return  res.status(401).send({ status: false, message: "Invalid Token", error:err.message })
         }
-      req.userId=decodedToken.userId
+        req.userId=decodedToken.userId
+      
       next();
   
     } catch (err) {

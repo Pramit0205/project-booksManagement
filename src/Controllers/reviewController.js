@@ -23,6 +23,7 @@ const review = async function (req, res) {
         
         if (!reviewedBy) return res.status(400).send({ status: false, msg: "reviewedBy is required" })
         if (!validation.isValid(reviewedBy)) return res.status(400).send({ status: false, message: "Please Enter any name" });
+      
         const isReviewRepeat = await reviewModel.findOne({ bookId: bookId, reviewedBy: reviewedBy, isDeleted: false });
         if (isReviewRepeat) return res.status(400).send({ staus: false, message: "This person as already reviewed this book" });
 
