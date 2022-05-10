@@ -11,8 +11,9 @@ const userController = require("../Controllers/userController")
 
 //User API
 router.post("/registerUser", userController.userData);
+//LogIn API
 router.post("/login", userController.loginUser)
-
+// Book Api
 router.post("/books", bookController.createBook)
 
 

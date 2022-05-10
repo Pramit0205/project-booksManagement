@@ -77,8 +77,9 @@ let userData = async (req, res) => {
           .status(400)
           .send({ status: false, message: "Address Must Be Present" });
       }
+      //if(typeof address !== Object) return res.status(400).send({status:false , msg : "Address must be an Object"})
       if(Object.keys(address).length==0) return res.status(400).send({status:false, msg: "Address Field cannot Be empty"}); 
-    if(typeof address !== "Object") return res.status(400).send({status:false , msg : "Address must be an Object"})
+   
  }
 
     
@@ -98,7 +99,7 @@ let userData = async (req, res) => {
 };
 
 
-//Login User
+//====================================================================Login User===================================================================
 const loginUser = async function (req, res) {
     try {
         const credentials = req.body
@@ -132,7 +133,7 @@ const loginUser = async function (req, res) {
        
         // Set header
         res.setHeader("x-api-key", token);
-        res.status(200).send({ status: true, message: "Author login successful", data: { token } })
+        res.status(200).send({ status: true, message: "User login successful", data: { token } })
     } catch (err) {
         res.status(500).send({ status: false, message: "Error", error: err.message })
     }
