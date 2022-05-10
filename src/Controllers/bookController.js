@@ -9,12 +9,20 @@ const createBook = async function (req, res) {
         let data = req.body
         if (Object.keys(data).length === 0) return res.status(400).send({ status: false, msg: "data must be given" })
         
-        const { title, excerpt, userId, ISBN, category, subcategory, reviews, releasedAt } = req.body;
+        const { title, excerpt, userId, ISBN, category, subcategory } = data;
 
         //Validate title
         if (!validation.isValid(title)) {
             return res.status(400).send({ status: false, msg: "Book title is required" });
         }
+       
+            let uniqueTitle = await bookModel.findOne({ title });
+            if (uniqueTitle ) {
+              return res
+                .status(400)
+                .send({ status: false, msg: "Title already exists" });
+            }
+          
 
         //Validate excerpt
         if (!validation.isValid(excerpt)) {
@@ -27,7 +35,7 @@ const createBook = async function (req, res) {
             return res.status(400).send({ status: false, msg: "Not a valid id" });
         }
        
-        let validUser = await userModel.findById(userId).catch(err => null)
+        let validUser = await userModel.findById(userId)
         if (!validUser) return res.status(404).send({ status: false, msg: "UserId doesn't exist" })
 
        
@@ -36,6 +44,12 @@ const createBook = async function (req, res) {
         if (!validation.isValid(ISBN)) {
             return res.status(400).send({ status: false, msg: "ISBN is required" });
         }
+        if(!validation.isValidISBN(ISBN)){
+            return res.status(400).send({status:false , msg: "Not a Valid ISBN "})
+        }
+        let uniqueISBN = await bookModel.findOne({ISBN:ISBN})
+        if (uniqueISBN) return res.status(400).send({ status: false, msg: "ISBN already exists" })
+
 
         //Validate category
         if (!validation.isValid(category)) {
@@ -46,6 +60,23 @@ const createBook = async function (req, res) {
         //Validate subcategory
         if (!validation.isValid(subcategory)) {
             return res.status(400).send({ status: false, msg: "subcategory is required" });
+        }
+       /*if (typeof subcategory === '[object string]') {
+               data.push(...subcategory)
+            } else if (typeof subcategory === "string") {
+                data.push(subcategory)
+            }
+            else {
+                return res.status(400).send({ status: false, msg: "Please send subcategory in array" })
+            }*/
+        if (subcategory) {
+            if (Array.isArray(subcategory)) {                                             
+                data['subcategory'] = [...subcategory]                              
+
+            }
+            if (Object.prototype.toString.call(subcategory) === '[object string]') {
+                data['subcategory'] = [subcategory]
+            }
         }
         //Validate releasedAt
         /*if (!validation.isValid(releasedAt)) {
@@ -69,7 +100,7 @@ const createBook = async function (req, res) {
             ISBN,
             category,
             subcategory,
-            reviews,
+            //reviews,
            // releasedAt: releasedAt ? releasedAt: "releasedAt is required",
         };
 
@@ -80,7 +111,7 @@ const createBook = async function (req, res) {
         res.status(500).send({ status: false, msg: e.message })
     }
 }
-// Get books by query
+//==================================================================== Get books by query===========================================
 const getBooks = async function(req,res){
     try{
         const userQuery = req.query
