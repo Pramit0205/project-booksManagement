@@ -95,7 +95,7 @@ const getBooks = async function (req, res) {
             if (!ObjectId.isValid(userId)) {
                 return res.status(400).send({ status: false, message: "Invalid UserId." });
             }
-            if (ObjectId.isValid(userId)) {
+            else {
                 filter["userId"] = userId;
             }
         }
