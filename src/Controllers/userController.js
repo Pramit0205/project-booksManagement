@@ -12,17 +12,17 @@ let userData = async (req, res) => {
 
     //========================================== if Title missing & not Valid=============================================     
     if (!validation.isValid(title))
-      return res.status(400).send({ status: false, message: "title is missing" });
+      return res.status(400).send({ status: false, message: "Title is missing." });
 
     if (!validation.isValidTitle(title))
-      return res.status(400).send({ status: false, message: "Not a valid Title" });
+      return res.status(400).send({ status: false, message: "Not a valid Title. Title should contain only ['Mr', 'Mrs', 'Miss']" });
 
     //====================================================== If Name Missing and Not Valid ================================
     if (!validation.isValid(name))
       return res.status(400).send({ status: false, message: "Name is missing" });
 
     if (!validation.isValidName(name))
-      return res.status(400).send({ status: false, message: "Not a valid Name" });
+      return res.status(400).send({ status: false, message: "Name should contain on alphabets" });
 
     //=================================================== If PhONE Missing and Not Valid and ALready Exists ================
     if (!validation.isValidPhone(phone))
@@ -33,24 +33,22 @@ let userData = async (req, res) => {
       return res.status(400).send({ status: false, message: "Phone Number already exists" });
 
     if (!validation.isValidPhone(phone))
-      return res.status(400).send({ status: false, message: "Not a valid Phone Number" });
+      return res.status(400).send({ status: false, message: "Mobile should be only 10 digit number, starts with 6-9." });
 
     //========================================================== If Email Missing and Not Valid and ALready exists ===========
     if (!validation.isValid(email))
-      return res.status(400).send({ status: false, message: "email missing" });
+      return res.status(400).send({ status: false, message: "Email is Required." });
 
     let uniqueEmail = await userModel.findOne({ email: email });
     if (uniqueEmail)
       return res.status(400).send({ status: false, message: "emailId already exists" });
 
     if (!validation.isValidEmail(email))
-      return res
-        .status(400)
-        .send({ status: false, message: "Not a valid emailId" });
+      return res.status(400).send({ status: false, message: "Not a valid emailId. e.g: abc@xyz.com" });
 
     //=============================================== IF Password Missing and Not Valid  =======================================
     if (!validation.isValid(password))
-      return res.status(400).send({ status: false, message: "password is required" });
+      return res.status(400).send({ status: false, message: "Password is required" });
 
     if (!validation.isValidPassword(password))
       return res.status(400).send({ status: false, message: "Your password must contain atleast one number,uppercase,lowercase and special character[ @ $ ! % * ? & ] and length should be min of 8-15 charachaters" });
@@ -61,17 +59,17 @@ let userData = async (req, res) => {
     if (address) {
       //In address the street is present
       if (address.street) {
-        if (!validation.isValid(address.street)) return res.status(400).send({ status: false, message: "Please Enter street" });
+        if (!validation.isValid(address.street)) return res.status(400).send({ status: false, message: "Please Enter street." });
       }
       //In address the city is present
       if (address.city) {
         if (!validation.isValid(address.city)) return res.status(400).send({ status: false, message: "Please Enter city" });
-        if (!cityReg.test(address.city)) return res.status(400).send({ status: false, message: "City name is not valid" });
+        if (!cityReg.test(address.city)) return res.status(400).send({ status: false, message: "City name should contain only alphabets." });
       }
       //In address the pincode is present
       if (address.pincode) {
         if (!validation.isValid(address.pincode)) return res.status(400).send({ status: false, message: "Please Enter pincode" });
-        if (!pinReg.test(address.pincode)) return res.status(400).send({ status: false, message: "not a valid pin code" });
+        if (!pinReg.test(address.pincode)) return res.status(400).send({ status: false, message: "Pin no should be 6 digit numerical value only." });
       }
     }
     //================================================================ Data creation ============================================
@@ -89,7 +87,7 @@ const loginUser = async function (req, res) {
   try {
     const credentials = req.body
     // Validation of input
-    if (!validation.isValidRequest(credentials)) return res.status(400).send({ status: false, message: "Please enter the required credentials." })
+    if (!validation.isValidRequest(credentials)) return res.status(400).send({ status: false, message: "Please enter the required credentials(email, password)." })
     const { email, password } = credentials
 
     // Input Value Validation

@@ -28,6 +28,11 @@ const isValidDate =function(date){
     const dateRegex = /^\d{4}-(02-(0[1-9]|[12][0-9])|(0[469]|11)-(0[1-9]|[12][0-9]|30)|(0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))$/
     return dateRegex.test(date)
 }
+//Script validation
+const isValidScripts = function(script){
+    const scriptRegex =/^[a-zA-Z0-9 @,.;:?&!_-]{2,}$/
+    return scriptRegex.test(script)
+}
 //title validation
 const isValidTitle = function (title) {
     return ['Mr', 'Mrs', 'Miss'].indexOf(title) !== -1
@@ -43,4 +48,4 @@ const isValidRequest = function (request) {
     return (Object.keys(request).length > 0)
 }
 
-module.exports = { isValidEmail, isValidPassword, isValid, isValidName, isValidTitle, isValidPhone, isValidRequest, isValidISBN, isValidDate }
+module.exports = { isValidEmail, isValidPassword, isValid, isValidName, isValidTitle, isValidPhone, isValidRequest, isValidISBN, isValidDate, isValidScripts }
