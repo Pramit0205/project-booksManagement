@@ -255,7 +255,7 @@ const deleteBook = async function (req, res) {
 
         // Book delete
         const deletedBook = await bookModel.findOneAndUpdate({ _id: bookId }, { $set: { isDeleted: true, deletedAt: new Date() } }, { new: true })
-         res.status(200).send({ status: true, message: "Book is Deleted", data: deletedBook });
+         res.status(200).send({ status: true, message: "Book Deleted", data: deletedBook });
     }
     catch (err) {
         return res.status(500).send({ status: false, message: err.message })
