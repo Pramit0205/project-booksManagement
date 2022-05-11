@@ -18,7 +18,7 @@ const createBook = async function (req, res) {
             return res.status(400).send({ status: false, message: "Book title is required" });
 
         if (!validation.isValidScripts(title))
-            return res.status(400).send({ status: false, message: "Title is invalid(Should Contain Alphabets, numbers & [@ , . ; : ? & ! _ -]" });
+            return res.status(400).send({ status: false, message: "Title is invalid(Should Contain Alphabets, numbers, quotation marks & [@ , . ; : ? & ! _ - $]" });
 
         const uniqueTitle = await bookModel.findOne({ title });
         if (uniqueTitle)
@@ -192,7 +192,7 @@ const updatebook = async function (req, res) {
             const uniqueTitle = await bookModel.findOne({ title })
 
             if (uniqueTitle) return res.status(400).send({ status: false, message: "Title is already present." })
-            if (!validation.isValidScripts(title)) return res.status(400).send({ status: false, message: "Title is invalid(Should Contain Alphabets, numbers & [@ , . ; : ? & ! _ -]." })
+            if (!validation.isValidScripts(title)) return res.status(400).send({ status: false, message: "Title is invalid (Should Contain Alphabets, numbers, quotation marks  & [@ , . ; : ? & ! _ - $]." })
         }
         dataToUpdate['title'] = title
 

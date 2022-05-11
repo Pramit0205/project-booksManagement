@@ -30,7 +30,7 @@ const isValidDate =function(date){
 }
 //Script validation
 const isValidScripts = function(script){
-    const scriptRegex =/^[a-zA-Z0-9 @,.;:?&!_-]{2,}$/
+    const scriptRegex =/^[a-zA-Z0-9 '"$@,.;:?&!_-]{2,}$/
     return scriptRegex.test(script)
 }
 //title validation
