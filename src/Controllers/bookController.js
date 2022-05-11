@@ -4,6 +4,7 @@ const validation = require("../Middlewares/validation");
 const userModel = require("../Models/userModel");
 const ObjectId = require("mongoose").Types.ObjectId;
 
+
 //==========================================================Create Book Api======================================================
 const createBook = async function (req, res) {
     try {
@@ -254,13 +255,14 @@ const deleteBook = async function (req, res) {
         if (userIdFromToken !== findDeletedBook.userId.toString()) return res.status(403).send({ status: false, message: "Unauthorized Accesss." })
 
         // Book delete
-        const deletedBook = await bookModel.findOneAndUpdate({ _id: bookId }, { $set: { isDeleted: true, deletedAt: new Date() } }, { new: true })
+        const deletedBook = await bookModel.findOneAndUpdate({ _id: bookId }, { $set: { isDeleted: true, deletedAt: new Date().toLocaleString()} }, { new: true })
          res.status(200).send({ status: true, message: "Book Deleted", data: deletedBook });
     }
     catch (err) {
         return res.status(500).send({ status: false, message: err.message })
     }
 }
+//********** "deletedAt": "",  if deleted is true deletedAt will have a date 2021-09-17T04:25:07.803Z,*******//
 
 
 module.exports.createBook = createBook
