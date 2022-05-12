@@ -256,7 +256,7 @@ const deleteBook = async function (req, res) {
         if (userIdFromToken !== findDeletedBook.userId.toString()) return res.status(403).send({ status: false, message: "Unauthorized Accesss." })
 
         // Book delete
-        const deletedBook = await bookModel.findOneAndUpdate({ _id: bookId }, { $set: { isDeleted: true, deletedAt: new Date().toLocaleString()} }, { new: true })
+        const deletedBook = await bookModel.findOneAndUpdate({ _id: bookId }, { $set: { isDeleted: true, deletedAt: new Date()} }, { new: true })
          res.status(200).send({ status: true, message: "Book Deleted", data: deletedBook });
     }
     catch (err) {
