@@ -120,6 +120,7 @@ const getBooks = async function (req, res) {
             const subCategoryArray = subcategory.trim().split(",").map((s) => s.trim());
             filter["subcategory"] = { $all: subCategoryArray };
         }
+        console.log(filter)
 
         const findBooks = await bookModel.find(filter).select({ title: 1, excerpt: 1, userId: 1, category: 1, reviews: 1, releasedAt: 1 });
 
@@ -262,7 +263,7 @@ const deleteBook = async function (req, res) {
         return res.status(500).send({ status: false, message: err.message })
     }
 }
-//********** "deletedAt": "",  if deleted is true deletedAt will have a date 2021-09-17T04:25:07.803Z,*******//
+//********** "deletedAt": "", // if deleted is true deletedAt will have a date 2021-09-17T04:25:07.803Z,*******//
 
 
 module.exports.createBook = createBook
