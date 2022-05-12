@@ -263,7 +263,7 @@ const deleteBook = async function (req, res) {
         return res.status(500).send({ status: false, message: err.message })
     }
 }
-//********** "deletedAt": "", // if deleted is true deletedAt will have a date 2021-09-17T04:25:07.803Z,*******//
+//********** "deletedAt": "", // if deleted is true deletedAt will have a date 2021-09-17T04:25:07.803Z,******* Only if Deleted at the type Date but Its String//
 
 
 module.exports.createBook = createBook

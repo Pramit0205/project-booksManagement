@@ -11,7 +11,7 @@ const BooksSchema = new mongoose.Schema({
     
     ISBN: { type: String, required: true, unique: true, trim: true },
     
-    category: { type: String, required: true, trim: true, lowercase:true },
+    category: { type: String, required: true, trim: true},
    
     subcategory: { type: [String], required: true, trim: true,lowercase:true },
    
