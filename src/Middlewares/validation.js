@@ -43,9 +43,16 @@ const isValid= function (value) {
     if (typeof value === 'string' && value.trim().length === 0) return false
     return true
 }
+//Rating validation
+const isValidRating = function (rating) {
+    const mobileRegex = /^[1-5]\d{0}$/
+    return mobileRegex.test(rating)
+}
+
+
 //request validation
 const isValidRequest = function (request) {
     return (Object.keys(request).length > 0)
 }
 
-module.exports = { isValidEmail, isValidPassword, isValid, isValidName, isValidTitle, isValidPhone, isValidRequest, isValidISBN, isValidDate, isValidScripts }
+module.exports = { isValidEmail, isValidPassword, isValid, isValidName, isValidTitle, isValidPhone, isValidRequest,isValidRating, isValidISBN, isValidDate, isValidScripts }
