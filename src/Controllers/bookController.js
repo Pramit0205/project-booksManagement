@@ -247,7 +247,7 @@ const deleteBook = async function (req, res) {
 
         // Finding the book
         const findDeletedBook = await bookModel.findOne({ _id: bookId, isDeleted: false });
-        if (!findDeletedBook) return res.status(400).send({ status: false, message: "Book not found" });
+        if (!findDeletedBook) return res.status(404).send({ status: false, message: "Book not found" });
 
         // Authorization
         const userIdFromToken = req.userId

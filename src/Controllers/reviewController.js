@@ -49,7 +49,7 @@ const createReview = async function (req, res) {
         //Creating Review data
         const createReview = await reviewModel.create(reviewData);
         // Getting Review List
-        const reviewList = await reviewModel.find({ bookId: bookId, isDeleted: false }).select({ isDeleted: false, __v: 0 })
+        const reviewList = await reviewModel.find({ bookId: bookId, isDeleted: false }).select({ isDeleted:0, __v: 0 })
         // Assigning reviews list
         const booksWithAllReviews = updatingReviewCount.toObject()
         booksWithAllReviews['reviewsData'] = reviewList
