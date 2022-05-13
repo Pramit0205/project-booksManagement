@@ -48,7 +48,7 @@ const createReview = async function (req, res) {
         const bookWithReview = updatingReviewCount.toObject()
         bookWithReview['reviewsData'] = reviewList
 
-        res.status(200).send({ status: false, messege: "Review Successful", data: bookWithReview })
+        res.status(200).send({ status: true, messege: "Review Successful", data: bookWithReview })
     }
     catch (err) {
         return res.status(500).send({ status: false, messege: err.message })
