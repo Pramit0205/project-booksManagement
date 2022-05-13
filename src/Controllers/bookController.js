@@ -63,7 +63,7 @@ const createBook = async function (req, res) {
         if (!validation.isValid(subcategory))
             return res.status(400).send({ status: false, message: "subcategory is required" });
 
-        if (!validation.isValidName(subcategory))
+        if (!validation.isValidScripts(subcategory))
             return res.status(400).send({ status: false, message: "Subcategory is not valid(Should cointain alphabets only)" });
 
         if (subcategory) {
