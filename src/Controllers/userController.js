@@ -75,6 +75,8 @@ let userData = async (req, res) => {
         if (!pinReg.test(address.pincode)) return res.status(400).send({ status: false, message: "Pin no should be 6 digit numerical value only." });
       }
     }
+
+    if (isDeleted == true) return res.status(400).send({ status: false, message: "You can't add this key at user creation time." })
     //================================================================ Data creation 
     const result = await userModel.create({ title, name, phone, email, password, address });
     res.status(201).send({ status: true, data: result });

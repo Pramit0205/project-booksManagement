@@ -79,13 +79,13 @@ const createBook = async function (req, res) {
         if (!validation.isValid(releasedAt)) return res.status(400).send({ status: false, message: "Release date is Required" })
         if (!validation.isValidDate(releasedAt)) return res.status(400).send({ status: false, message: "Date should be valid & format will YYYY-MM-DD" })
 
-        if (isDeleted == true) return res.status(400).send({ status: false, message: "You can't add this keys at book creation time." })
+        if (isDeleted == true) return res.status(400).send({ status: false, message: "You can't add this key at book creation time." })
 
         const bookData = { title, excerpt, userId, ISBN, category, subcategory, releasedAt };
 
         //=============================================================================Authorization
         const userIdFromToken = req.userId
-        if (userIdFromToken !== userId) return res.status(403).send({ status: false, message: "Unauthorized Accesss." })
+        if (userIdFromToken !== userId) return res.status(403).send({ status: false, message: "Unauthorized Access." })
 
         const savedBook = await bookModel.create(bookData);
         return res.status(201).send({ status: true, message: "Book Created Successfully", data: savedBook });
@@ -254,7 +254,7 @@ const deleteBook = async function (req, res) {
 
         // Authorization
         const userIdFromToken = req.userId
-        if (userIdFromToken !== findDeletedBook.userId.toString()) return res.status(403).send({ status: false, message: "Unauthorized Accesss." })
+        if (userIdFromToken !== findDeletedBook.userId.toString()) return res.status(403).send({ status: false, message: "Unauthorized Access." })
 
         // Book delete
         const deletedBook = await bookModel.findOneAndUpdate({ _id: bookId }, { $set: { isDeleted: true, deletedAt: new Date() } }, { new: true })

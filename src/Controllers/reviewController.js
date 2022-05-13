@@ -44,6 +44,8 @@ const createReview = async function (req, res) {
             if (!validation.isValid(review)) return res.status(400).send({ status: false, message: "Please Enter any review" });
         }
 
+        if (isDeleted == true) return res.status(400).send({ status: false, message: "You can't add this key at review creation time." })
+
         // Updating the review count
         const updatingReviewCount = await bookModel.findOneAndUpdate({ _id: bookId }, { $inc: { reviews: +1 } }, { new: true }).select({ __v: 0 })
         //Creating Review data
