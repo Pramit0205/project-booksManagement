@@ -45,8 +45,8 @@ const isValid= function (value) {
 }
 //Rating validation
 const isValidRating = function (rating) {
-    const mobileRegex = /^[1-5]\d{0}$/
-    return mobileRegex.test(rating)
+    const ratingRegex = /^[\1-5]*$/
+    return ratingRegex.test(rating)
 }
 
 

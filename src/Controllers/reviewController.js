@@ -18,12 +18,14 @@ const createReview = async function (req, res) {
         let { reviewedBy, rating, review, isDeleted } = reviewData
 
         // Validation of reviewby
-        if (!validation.isValid(reviewedBy)) return res.status(400).send({ status: false, message: "Please Enter reviwedBy name" });
-        if (!validation.isValidName(reviewedBy)) return res.status(400).send({ status: false, message: "Name should contain on alphabets" });
-
+        if (reviewedBy) {
+            if (!validation.isValid(reviewedBy)) return res.status(400).send({ status: false, message: "Please Enter reviwedBy name" });
+            if (!validation.isValidName(reviewedBy)) return res.status(400).send({ status: false, message: "Reviewer's Name should contain alphabets only." });
+        }
         //Rating Validation
         if (!validation.isValid(rating)) return res.status(400).send({ status: false, messege: "Rating is required" })
-        if (!validation.isValidRating(rating)) return res.status(400).send({ status: false, message: "Rating must be  1 to 5 numerical value" });
+        if (((rating < 1) || (rating > 5)) || (!validation.isValidRating(rating)))
+            return res.status(400).send({ status: false, message: "Rating must be  1 to 5 numeriacl value" });
 
         // If review is present
         if (review) {
@@ -95,7 +97,7 @@ const updateReview = async function (req, res) {
         if (rating == "") {
             return res.status(400).send({ status: false, message: "Rating cannot be empty" })
         } else if (rating) {
-            if (!validation.isValid(rating) || !validation.isValidRating(rating))
+            if ( ((rating < 1) || (rating > 5)) || !validation.isValidRating(rating))
                 return res.status(400).send({ status: false, message: "Rating must be 1 to 5 numerical value" });
         }
         dataToUpdate['rating'] = rating
@@ -109,7 +111,7 @@ const updateReview = async function (req, res) {
         dataToUpdate['review'] = review
 
         // Updating The review details
-        const updatedReview = await reviewModel.findOneAndUpdate({ _id: reviewIdParams }, dataToUpdate, { new: true })
+        const updatedReview = await reviewModel.findOneAndUpdate({ _id: reviewIdParams }, dataToUpdate, { new: true }).select({isDeleted:0, createdAt:0,updatedAt:0,__v:0})
 
         // Assigning reviews list with book details
         const booksWithUpdatedReview = findBook.toObject()

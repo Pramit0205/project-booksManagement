@@ -66,14 +66,15 @@ const createBook = async function (req, res) {
         if (!validation.isValidScripts(subcategory))
             return res.status(400).send({ status: false, message: "Subcategory is not valid(Should cointain alphabets only)" });
 
-        if (subcategory) {
-            if (Array.isArray(subcategory)) {
-                data["subcategory"] = [...subcategory];
-            }
-            if (Object.prototype.toString.call(subcategory) === "[object string]") {
-                data["subcategory"] = [subcategory];
-            }
-        }
+
+        // if (subcategory) {
+        //     if (Array.isArray(subcategory)) {
+        //         data["subcategory"] = [...subcategory];
+        //     }
+        //     if (Object.prototype.toString.call(subcategory) === "[object string]") {
+        //         data["subcategory"] = [subcategory];
+        //     }
+        // }
 
         //==============================================================================Validate releasedAt
         if (!validation.isValid(releasedAt)) return res.status(400).send({ status: false, message: "Release date is Required" })

@@ -3,11 +3,11 @@ const validation = require("../Middlewares/validation")
 const jwt = require("jsonwebtoken")
 
 //=================================================== create User Api ========================================================================
-let userData = async (req, res) => {
+const userData = async (req, res) => {
   try {
     let { title, name, phone, email, password, address, isDeleted } = req.body;
     //===================================== if Empty Body ================================================================
-    if (Object.keys(req.body).length == 0)
+    if (!validation.isValidRequest(req.body))
       return res.status(400).send({ status: false, message: "Please enter User data" });
 
     //========================================== if Title missing & not Valid=============================================     
