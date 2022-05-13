@@ -25,10 +25,10 @@ let userData = async (req, res) => {
       return res.status(400).send({ status: false, message: "Name should contain on alphabets" });
 
     //=================================================== If PhONE Missing and Not Valid and ALready Exists ================
-    if (!validation.isValidPhone(phone))
+    if (!validation.isValid(phone))
       return res.status(400).send({ status: false, message: "Phone Number is missing" });
 
-    let uniquePhone = await userModel.findOne({ phone: phone });
+    const uniquePhone = await userModel.findOne({ phone: phone });
     if (uniquePhone)
       return res.status(400).send({ status: false, message: "Phone Number already exists" });
 
@@ -39,7 +39,7 @@ let userData = async (req, res) => {
     if (!validation.isValid(email))
       return res.status(400).send({ status: false, message: "Email is Required." });
 
-    let uniqueEmail = await userModel.findOne({ email: email });
+    const uniqueEmail = await userModel.findOne({ email: email });
     if (uniqueEmail)
       return res.status(400).send({ status: false, message: "emailId already exists" });
 
@@ -54,17 +54,20 @@ let userData = async (req, res) => {
       return res.status(400).send({ status: false, message: "Your password must contain atleast one number,uppercase,lowercase and special character[ @ $ ! % * ? & ] and length should be min of 8-15 charachaters" });
     // =========================================================== Address Validation =============================================
     const pinReg = /^[0-9]{6}$/
-    const cityReg =/^[A-Za-z]+$/
     //If address is present
     if (address) {
+      
+      if(typeof address !== 'object') return res.status(400).send({status:false, message:"'address' is not an object"})
+      if(!validation.isValidRequest(address))return res.status(400).send({status:false, message:"'address' is empty"})
+      
       //In address the street is present
       if (address.street) {
         if (!validation.isValid(address.street)) return res.status(400).send({ status: false, message: "Please Enter street." });
       }
       //In address the city is present
       if (address.city) {
-        if (!validation.isValid(address.city)) return res.status(400).send({ status: false, message: "Please Enter city" });
-        if (!cityReg.test(address.city)) return res.status(400).send({ status: false, message: "City name should contain only alphabets." });
+        if (!validation.isValid(address.city) ) return res.status(400).send({ status: false, message: "Please Enter city" });
+        if (!validation.isValidName(address.city)) return res.status(400).send({ status: false, message: "City name should contain only alphabets." });
       }
       //In address the pincode is present
       if (address.pincode) {
@@ -72,7 +75,7 @@ let userData = async (req, res) => {
         if (!pinReg.test(address.pincode)) return res.status(400).send({ status: false, message: "Pin no should be 6 digit numerical value only." });
       }
     }
-    //================================================================ Data creation ============================================
+    //================================================================ Data creation 
     const result = await userModel.create({ title, name, phone, email, password, address });
     res.status(201).send({ status: true, data: result });
   }
