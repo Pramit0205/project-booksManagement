@@ -150,7 +150,7 @@ const getReviewDetails = async function (req, res) {
         if (!getBook) return res.status(404).send({ status: false, message: "No book(s) found." })
 
         // Find Books Reviews
-        const getReviews = await reviewModel.find({ bookId: bookId, isDeleted: false })
+        const getReviews = await reviewModel.find({ bookId: bookId, isDeleted: false }).select({isDeleted:0, createdAt:0,updatedAt:0,__v:0})
 
         //Assigning reviewdata key
         let booksWithReview = getBook.toObject()
@@ -257,8 +257,12 @@ const deleteBook = async function (req, res) {
         if (userIdFromToken !== findDeletedBook.userId.toString()) return res.status(403).send({ status: false, message: "Unauthorized Access." })
 
         // Book delete
-        const deletedBook = await bookModel.findOneAndUpdate({ _id: bookId }, { $set: { isDeleted: true, deletedAt: new Date() } }, { new: true })
-        res.status(200).send({ status: true, message: "Book Deleted", data: deletedBook });
+        const deletedBook = await bookModel.findOneAndUpdate({ _id: bookId }, { $set: { isDeleted: true, deletedAt: new Date(), reviews:0 } }, { new: true })
+       
+        // Delete all reviews of this book
+        const deleteBookReviews = await reviewModel.find({bookId:bookId,isDeleted:false}).updateMany({$set:{isDeleted:true}})
+       
+        res.status(200).send({ status: true, message: "Book & Reviews of the book are Deleted"});
     }
     catch (err) {
         return res.status(500).send({ status: false, message: err.message })

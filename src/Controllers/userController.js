@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken")
 //=================================================== create User Api ========================================================================
 let userData = async (req, res) => {
   try {
-    let { title, name, phone, email, password, address } = req.body;
+    let { title, name, phone, email, password, address, isDeleted } = req.body;
     //===================================== if Empty Body ================================================================
     if (Object.keys(req.body).length == 0)
       return res.status(400).send({ status: false, message: "Please enter User data" });
@@ -128,6 +128,6 @@ const loginUser = async function (req, res) {
 }
 
 
-module.exports.userData = userData;
-module.exports.loginUser = loginUser
+module.exports.userData = userData
+module.exports.loginUser =loginUser
 
