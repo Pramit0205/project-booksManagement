@@ -22,6 +22,7 @@ const createReview = async function (req, res) {
             if (!validation.isValid(reviewedBy)) return res.status(400).send({ status: false, message: "Please Enter reviwedBy name" });
             if (!validation.isValidName(reviewedBy)) return res.status(400).send({ status: false, message: "Reviewer's Name should contain alphabets only." });
         }
+        
         //Rating Validation
         if (!validation.isValid(rating)) return res.status(400).send({ status: false, messege: "Rating is required" })
         if (((rating < 1) || (rating > 5)) || (!validation.isValidRating(rating)))
