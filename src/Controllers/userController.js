@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken")
 //=================================================== create User Api ========================================================================
 const userData = async (req, res) => {
   try {
-    let { title, name, phone, email, password, address, isDeleted } = req.body;
+    let { title, name, phone, email, password, address } = req.body;
     //===================================== if Empty Body ================================================================
     if (!validation.isValidRequest(req.body))
       return res.status(400).send({ status: false, message: "Please enter User data" });
@@ -76,7 +76,6 @@ const userData = async (req, res) => {
       }
     }
 
-    if (isDeleted == true) return res.status(400).send({ status: false, message: "You can't add this key at user creation time." })
     //================================================================ Data creation 
     const result = await userModel.create({ title, name, phone, email, password, address });
     res.status(201).send({ status: true, data: result });
