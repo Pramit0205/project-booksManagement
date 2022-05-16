@@ -54,7 +54,7 @@ const createReview = async function (req, res) {
         const bookWithReview = updatingReviewCount.toObject()
         bookWithReview['reviewsData'] = reviewList
 
-        res.status(200).send({ status: true, messege: "Review Successful", data: bookWithReview })
+        res.status(201).send({ status: true, messege: "Review Successful", data: bookWithReview })
     }
     catch (err) {
         return res.status(500).send({ status: false, messege: err.message })
@@ -137,7 +137,7 @@ const deleteReview = async function (req, res) {
 
         // Validation of ID
         if (!ObjectId.isValid(bookIdParams))
-            return res.status(400).send({ status: false, message: `${bookId} is not a valid book id` })
+            return res.status(400).send({ status: false, message: `${bookIdParams} is not a valid book id` })
 
         if (!ObjectId.isValid(reviewId))
             return res.status(400).send({ status: false, message: `${reviewId} is not a valid review id` })
