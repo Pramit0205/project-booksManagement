@@ -15,6 +15,9 @@ const createReview = async function (req, res) {
         // Validation of book id in Params
         if (!ObjectId.isValid(bookIdParams)) return res.status(400).send({ status: false, messege: "Not a valid Book id in url" });
 
+        const findBook = await bookModel.findOne({_id:bookIdParams, isDeleted:false})
+        if(!findBook) return res.status(404).send({status:false, message:"No book found"})
+
         let { reviewedBy, rating, review, isDeleted } = reviewData
 
         // Validation of reviewby
