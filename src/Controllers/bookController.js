@@ -60,12 +60,18 @@ const createBook = async function (req, res) {
             return res.status(400).send({ status: false, message: "Category is not valid(Should cointain alphabets only)" });
 
         //==============================================================================Validate subcategory
+        if (typeof (subcategory) == "object") {
+            for (let i = 0; i < subcategory.length; i++) {
+                if (!validation.isValid(subcategory[i]))
+                    return res.status(400).send({ status: false, message: "SUB-CATEGORY IS NOT VALID" })
+            }
+        }
         if (!validation.isValid(subcategory))
             return res.status(400).send({ status: false, message: "Subcategory is required" });
 
         if (!validation.isValidScripts(subcategory))
             return res.status(400).send({ status: false, message: "Subcategory is invalid (Should Contain Alphabets, numbers, quotation marks  & [@ , . ; : ? & ! _ - $]." });
-
+           
 
         //==============================================================================Validate releasedAt
         if (!validation.isValid(releasedAt)) return res.status(400).send({ status: false, message: "Release date is Required" })
