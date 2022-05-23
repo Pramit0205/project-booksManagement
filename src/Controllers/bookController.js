@@ -3,89 +3,88 @@ const reviewModel = require("../Models/reviewModel");
 const validation = require("../Middlewares/validation");
 const userModel = require("../Models/userModel");
 const ObjectId = require("mongoose").Types.ObjectId;
+const aws = require('../AWS/aws-S3')
 
 
 //==========================================================Create Book Api======================================================
 const createBook = async function (req, res) {
     try {
         const data = req.body;
-        if (!validation.isValidRequest(data))
-            return res.status(400).send({ status: false, message: "No input by user." });
+        console.log(data)
+        // Validate Request Body
+        if (!validation.isValidRequest(data)) return res.status(400).send({ status: false, message: "No input by user." });
+        // Destructuring request body
+        const { title, excerpt, userId, ISBN, category,subcategory, releasedAt, isDeleted } = data;
 
-        const { title, excerpt, userId, ISBN, category, subcategory, releasedAt, isDeleted } = data;
-
-        //===========================================================================Validate title
-        if (!validation.isValid(title))
-            return res.status(400).send({ status: false, message: "Book title is required" });
-
-        if (!validation.isValidScripts(title))
-            return res.status(400).send({ status: false, message: "Title is invalid(Should Contain Alphabets, numbers, quotation marks & [@ , . ; : ? & ! _ - $]" });
+        // Validate title
+        if (!validation.isValid(title)) return res.status(400).send({ status: false, message: "Book title is required" });
+        if (!validation.isValidScripts(title)) return res.status(400).send({ status: false, message: "Title is invalid(Should Contain Alphabets, numbers, quotation marks & [@ , . ; : ? & ! _ - $]" });
 
         const uniqueTitle = await bookModel.findOne({ title });
-        if (uniqueTitle)
-            return res.status(400).send({ status: false, message: "Title already exists" });
+        if (uniqueTitle) return res.status(400).send({ status: false, message: "Title already exists" });
 
-        //===========================================================================Validate excerpt
-        if (!validation.isValid(excerpt))
-            return res.status(400).send({ status: false, message: "Book excerpt is required" });
+        // Validate excerpt
+        if (!validation.isValid(excerpt)) return res.status(400).send({ status: false, message: "Book excerpt is required" });
 
-
-        //===================================================================================Validate userId
-        if (!validation.isValid(userId))
-            return res.status(400).send({ status: false, message: "userId is required" });
-
-        if (!ObjectId.isValid(userId))
-            return res.status(400).send({ status: false, message: "Not a valid user id" });
+        // Validate userId
+        if (!validation.isValid(userId)) return res.status(400).send({ status: false, message: "userId is required" });
+        if (!ObjectId.isValid(userId)) return res.status(400).send({ status: false, message: "Not a valid user id" });
 
         const validUser = await userModel.findById(userId);
-        if (!validUser)
-            return res.status(404).send({ status: false, message: "UserId doesn't exist" });
+        if (!validUser) return res.status(404).send({ status: false, message: "UserId doesn't exist" });
 
-        //==============================================================================Validate ISBN
-        if (!validation.isValid(ISBN))
-            return res.status(400).send({ status: false, message: "ISBN is required" });
-
-        if (!validation.isValidISBN(ISBN))
-            return res.status(400).send({ status: false, message: "Not a Valid ISBN. (Only 10 or 13 digit number.)" });
+        // Validate ISBN
+        if (!validation.isValid(ISBN)) return res.status(400).send({ status: false, message: "ISBN is required" });
+        if (!validation.isValidISBN(ISBN)) return res.status(400).send({ status: false, message: "Not a Valid ISBN. (Only 10 or 13 digit number.)" });
 
         const uniqueISBN = await bookModel.findOne({ ISBN: ISBN });
-        if (uniqueISBN)
-            return res.status(400).send({ status: false, message: "ISBN already exists" });
+        if (uniqueISBN) return res.status(400).send({ status: false, message: "ISBN already exists" });
 
-        //==============================================================================Validate category
-        if (!validation.isValid(category))
-            return res.status(400).send({ status: false, message: "category is required" });
+        //Validate category
+        if (!validation.isValid(category)) return res.status(400).send({ status: false, message: "category is required" });
+        if (!validation.isValidName(category)) return res.status(400).send({ status: false, message: "Category is not valid(Should cointain alphabets only)" });
 
-        if (!validation.isValidName(category))
-            return res.status(400).send({ status: false, message: "Category is not valid(Should cointain alphabets only)" });
+        //-----------------------AWS--------------------------------------
+        let files = req.files
+    
+        if (files && files.length > 0) {
+            let uploadedFileURL = await aws.uploadFile(files[0])
+            const uniqueCover = await bookModel.findOne({bookCover:uploadedFileURL})
+        if(uniqueCover) return res.status(400).send({status:false, message:"Book cover already exsits."})
 
-        //==============================================================================Validate subcategory
+            data['bookCover'] = uploadedFileURL
+        }
+        else {
+           return res.status(400).send({ msg: "No file found" })
+        }
+        
+        //------------------------------------------------------------------
+        //Validate subcategory
+        if (!validation.isValid(subcategory)) return res.status(400).send({ status: false, message: "Subcategory is required" });
         if (typeof (subcategory) == "object") {
             for (let i = 0; i < subcategory.length; i++) {
                 if (!validation.isValid(subcategory[i]))
                     return res.status(400).send({ status: false, message: "SUB-CATEGORY IS NOT VALID" })
             }
         }
-        if (!validation.isValid(subcategory))
-            return res.status(400).send({ status: false, message: "Subcategory is required" });
+        if (!validation.isValidScripts(subcategory)) return res.status(400).send({ status: false, message: "Subcategory is invalid (Should Contain Alphabets, numbers, quotation marks  & [@ , . ; : ? & ! _ - $]." });
+        let subArray = subcategory.split(',')
+        data['subcategory']= subArray
 
-        if (!validation.isValidScripts(subcategory))
-            return res.status(400).send({ status: false, message: "Subcategory is invalid (Should Contain Alphabets, numbers, quotation marks  & [@ , . ; : ? & ! _ - $]." });
-           
-
-        //==============================================================================Validate releasedAt
+        //Validate releasedAt
         if (!validation.isValid(releasedAt)) return res.status(400).send({ status: false, message: "Release date is Required" })
         if (!validation.isValidDate(releasedAt)) return res.status(400).send({ status: false, message: "Date should be valid & format will YYYY-MM-DD" })
 
+        // Can't Set deleted true at creation time
         if (isDeleted == true) return res.status(400).send({ status: false, message: "You can't add this key at book creation time." })
 
-        const bookData = { title, excerpt, userId, ISBN, category, subcategory, releasedAt };
+        // const bookData = { title, excerpt, userId, ISBN, category, bookCover, subcategory, releasedAt }
 
-        //=============================================================================Authorization
+        //Authorization
         const userIdFromToken = req.userId
         if (userIdFromToken !== userId) return res.status(403).send({ status: false, message: "Unauthorized Access." })
 
-        const savedBook = await bookModel.create(bookData);
+        const savedBook = await bookModel.create(data);
         return res.status(201).send({ status: true, message: "Book Created Successfully", data: savedBook });
     } catch (err) {
         return res.status(500).send({ status: false, message: err.message });
